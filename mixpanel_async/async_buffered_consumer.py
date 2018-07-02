@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from mixpanel import BufferedConsumer as SynchronousBufferedConsumer
 from mixpanel import MixpanelException
 
+
 class FlushThread(threading.Thread):
     '''
     FlushThread is used to asynchronously flush the events stored in
@@ -45,7 +46,7 @@ class AsyncBufferedConsumer(SynchronousBufferedConsumer):
 
     Because AsyncBufferedConsumer holds events until the `flush_after` timeout
     or an endpoint queue hits the size of _max_queue_size, you should call
-    flush(async=False) before you terminate any process where you have been
+    flush(asyncronous=False) before you terminate any process where you have been
     using the AsyncBufferedConsumer.
     '''
 
@@ -137,7 +138,7 @@ class AsyncBufferedConsumer(SynchronousBufferedConsumer):
         '''
         Record an event or a profile update. Calls to send() will store
         the given message in memory, and (when enough messages have been stored)
-        trigger an async request to Mixpanel's servers.
+        trigger an asyncronous request to Mixpanel's servers.
 
         Calls to send() may throw an exception, but the exception may be
         associated with the message given in an earlier call. If this is the case,
@@ -163,7 +164,7 @@ class AsyncBufferedConsumer(SynchronousBufferedConsumer):
             self._flush_endpoint(endpoint)
 
 
-    def flush(self, endpoint=None, async=True):
+    def flush(self, endpoint=None, asyncronous=True):
         '''
         Send all remaining messages to Mixpanel. AsyncBufferedConsumers will
         flush automatically when you call send(), but you will need to call
@@ -179,12 +180,12 @@ class AsyncBufferedConsumer(SynchronousBufferedConsumer):
 
         :param endpoint (str): One of 'events' or 'people, the Mixpanel endpoint
         for sending the data
-        :param async (bool): Whether to flush the data in a seperate thread or not
+        :param asyncronous (bool): Whether to flush the data in a seperate thread or not
         '''
 
         flushing = False
 
-        if async:
+        if asyncronous:
             # this flush lock is used to guarantee that only one flushing_thread
             # is ever alive.
             with self.flush_lock:
@@ -241,11 +242,11 @@ class AsyncBufferedConsumer(SynchronousBufferedConsumer):
                 self._buffers[key].append(buf.pop(0))
 
 
-    def _flush_endpoint(self, endpoint, async=True):
+    def _flush_endpoint(self, endpoint, asyncronous=True):
         # we override flush with endpoint so as to keep all the
         # threading logic in one place, while still allowing individual
         # endpoints to be flushed
-        self.flush(endpoint=endpoint, async=async)
+        self.flush(endpoint=endpoint, asyncronous=asyncronous)
 
 
     def _sync_flush(self, endpoint=None):
